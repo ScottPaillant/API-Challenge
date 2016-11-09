@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!-- Scott Paillant -->
+<html>
+	<head>
+		<style type="text/css">
+			h1,h2{font-family:calibri; text-align:center;}
+			h2>span {background-color:black;color:#33FF33;font-family:Courier-New;} 
+			h3{text-align:center;font-style:italic;}
+			button:active { opacity:0.1;}
+			div#title{font-weight:900;}
+			
+		</style>
+		
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
+	
+		</script>
+		<script type="text/javascript">
+					
+		var myToken="83b2c71bc63e4455e488be7932deac04";
+		var stringToReverse="";
+		var stringReversed="";
+		var requestedString = false;
+			function sendScottData()
+			{
+				$.ajax({
+					url: 'http://challenge.code2040.org/api/reverse',
+					method: 'POST',
+					dataType: 'application/json',
+					contentType:'application/json; charset=utf-8',
+					data: JSON.stringify({ "token": myToken }),
+					complete: function(res){
+
+						stringToReverse=eval(res).responseText;
+						stringReversed= reverseString(stringToReverse);
+						document.getElementById("1").innerHTML=("String to Reverse: " + stringToReverse + '<br />' + 
+						"String reversed!" + '<br />' +
+						"String after reversal "+ stringReversed );	
+					}
+
+				});
+				requestedString=true;
+			}
+			
+			function send()
+			{
+				myInfo = {
+							token : "83b2c71bc63e4455e488be7932deac04",
+							string : stringReversed
+						};
+
+				if(requestedString)
+				{
+					$.ajax({
+						url: 'http://challenge.code2040.org/api/reverse/validate',
+						method: 'POST',
+						dataType: 'json',
+						contentType:'application/json; charset=utf-8',
+						data: JSON.stringify({ "token": myToken, "string": stringReversed}),
+						complete: function(res){
+							document.getElementById("2").innerHTML = (res.responseText);
+						}
+					});
+					
+				}
+				else
+				{
+					alert("Please get the string first, as without getting a string / reversing it, it cannot be sent!");
+				}
+			}
+			function reverseString(string)
+			{
+				var newString="";
+				for( i=((string.length)-1); i>=0; i--)
+				{
+					newString += string.substring(i,i+1);
+				}
+				return newString;
+			}
+	
+		</script>
+		
+	</head>
+	<body>
+		<h1> <i>Scott Paillant's</i> Code 2040 API Challenge </h1>
+		<h2> <span> Reverse a String </span> </h2>
+		<h3> Note: You should go in order to receive no errors. </h3>
+		
+		<div id="title"> Other Challenges </div> 
+		<div> <a href="NeedleInAHaystack.html"> Needle in a haystack</a> </div> 
+		<div> <a href="Prefix.html"> Prefix </a> </div> 
+		<div> <a href="Dating.html"> The Dating game</a> </div> 
+		<p>
+			<div> Instructions: </div>
+			<div> 1. Request the string to be reversed and display reversed string. </div>
+			<div> 2. Send the reversed string back to the api. </div>
+		
+			You can press the buttons below to let the code do all steps for you!
+		</p>
+		
+		<button onclick="sendScottData()"> 
+			Click on this button to send Scott's data!
+		</button>
+		<br />
+		<br />
+		<div id="1">  
+		</div>
+		<br />
+		<br />
+		<button onclick="send()"> 
+			Click on this to send the reversed string!
+		</button>
+		<br />
+		<br />
+		<div id="2">
+
+		</div>
+		
+		
+		
+	</body>
+</html>

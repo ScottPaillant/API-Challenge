@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!-- Scott Paillant -->
+<html>
+	<head>
+		<style type="text/css">
+			h1,h2{font-family:calibri; text-align:center;}
+			h2>span {background-color:black;color:#33FF33;font-family:Courier-New;} 
+			h3{text-align:center;font-style:italic;}
+			button:active { opacity:0.1;}
+			div#title{font-weight:900;}
+			
+		</style>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
+	
+		</script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js">
+			
+		</script>
+		<script type="text/javascript">
+		
+			var myInfo ={
+							token : "83b2c71bc63e4455e488be7932deac04" 
+						};
+						
+			var myToken="83b2c71bc63e4455e488be7932deac04";
+			var counter =0;
+			var date= "";
+			var newDate;
+			var newDateString="";
+			var interval=0;
+			var requestedDate = false;
+			var r = false;
+			var m ="";
+			function sendScottData()
+			{
+				$.ajax({
+					url: 'http://challenge.code2040.org/api/dating',
+					method: 'POST',
+					dataType: 'json',
+					data: myInfo,
+					contentType:'application/json; charset=utf-8',
+					success: function(res){
+						date = eval(res).datestamp;
+						interval = eval(res).interval;
+
+						document.getElementById("1").innerHTML = " " + date + " " + interval ; 
+					}
+				});
+				requestedDate = true;
+				counter=1;
+			}
+		
+			function getAndChange()
+			{
+				if(requestedDate)
+				{
+					m = moment(date);
+					m.add(interval, 'ms');
+					m = m.toJSON();
+					var oldDate = new Date(date);
+					newDate = new Date(oldDate.getTime() + (interval * 1000));
+					newDateString = newDate.toISOString().split(".")[0]+"Z";
+					document.getElementById("2").innerHTML="Date given: "+  date +"(ISO 8601 format)";
+					document.getElementById("3").innerHTML="Interval: " + interval +"(in seconds)";
+					document.getElementById("4").innerHTML="New date: "+ newDateString +"(ISO 8601 format)";
+
+				
+					r = true;
+				}
+				else
+				{
+					alert("Please send Scott's data first, as without knowning his token you cant get the string!");
+				}
+			}
+			
+		
+			
+			function send()
+			{
+				var x = "";
+				x = m;
+				myInfo = {
+							token: myToken,
+							datestamp : newDateString
+				}
+
+				if(r)
+				{
+					$.ajax({
+					url: 'http://challenge.code2040.org/api/dating/validate',
+					method: 'POST',
+					dataType: 'json',
+					data: myInfo,
+					contentType:'application/json; charset=utf-8',
+					success: function(res){
+						document.getElementById("5").innerHTML=( "Response :" + eval(res).responseText);
+					}
+					});
+					
+				}
+				else
+				{
+					alert("Please get the string first, as without getting a string / reversing it, it cannot be sent!");
+				}
+			}
+			
+	
+		</script>
+		
+	</head>
+	<body>
+		<h1> <i>Scott Paillant's</i> Code 2040 API Challenge </h1>
+		<h2> <span> The Dating game </span> </h2>
+		<h3> Note: You should go in order to receive no errors. </h3>
+	
+		<div id="title"> Other challenges </div> 
+		<div> <a href="Reverse.html"> Reverse String</a> </div>
+		<div> <a href="NeedleInAHaystack.html"> Needle in a haystack</a> </div>
+		<div> <a href="Prefix.html"> Prefix </a> </div>
+		
+		
+		<p>
+			<div>The objective:  </div>
+			<div>1. Send the information to retrieve datestamp and interval to add to it.</div>
+			<div>2. After retrieving your datestamp add your interval to it!</div>
+			<div>3. Send the data to the api!</div>
+			
+			You can press the buttons below to let the code do all these 3 steps for you!
+		
+		</p>
+		<button onclick="sendScottData();"> 
+			Click on this button to send Scott's data!
+		</button>
+		<br />
+		<br />
+		<div id="1">  
+		</div>
+		<br />
+		<br />
+		<button onclick="getAndChange()"> 
+			Click on this to get the timestamp and interval and the new timestamp!
+		</button>
+		<br />
+		<br />
+		<div id="2">
+		</div>
+		
+		<div id="3">
+		</div>
+		<div id="4">
+		</div>
+		<br />
+		<br />
+		<button onclick="send()"> 
+			Click on this to send the new timestamp !
+		</button>
+		<br />
+		<br />
+		
+		
+		<div id="5">
+		</div>
+		
+		
+	
+		
+		
+		
+	</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!-- Scott Paillant -->
+<html>
+	<head>
+
+		<style type="text/css">
+			h1,h2{font-family:calibri; text-align:center;}
+			h2>span {background-color:black;color:#33FF33;font-family:Courier-New;} 
+			h3{text-align:center;font-style:italic;}
+			button:active { opacity:0.1;}
+			div#title{font-weight:900;}
+			
+		</style>
+		
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
+	
+		</script>
+
+		<script type="text/javascript">
+		
+		var myInfo ={
+						token : "83b2c71bc63e4455e488be7932deac04" ,
+					};
+					
+		var myToken="83b2c71bc63e4455e488be7932deac04";
+
+		var requestedList = false;
+		var prefix = "";
+		var list = "";
+		var listFixed = false;
+		var index = 0;
+
+			function sendScottData()
+			{
+				
+				$.ajax({
+					url: 'http://challenge.code2040.org/api/prefix',
+					method: 'POST',
+					dataType: 'json',
+					contentType:'application/json; charset=utf-8',
+					data: myInfo,
+					success: function(res){
+						prefix = eval(res).prefix;
+						list = eval(res).array;
+
+						document.getElementById("1").innerHTML = " " + prefix + " " + list ; 
+					}
+				});
+				requestedList = true;
+			}
+		
+			function getAndFind()
+			{
+				if(requestedList)
+				{
+					list = fixList(list, prefix);
+					listFixed = true;
+					document.getElementById("2").innerHTML = list ; 
+				}
+				else
+				{
+					alert("Please send Scott's data first, as without knowning his token you cant get the string!");
+				}
+
+			}
+		
+			function send()
+			{
+				myInfo = {
+							token : myToken,
+							array : list
+				};
+
+				if(listFixed)
+				{
+
+					$.ajax({
+						url: 'http://challenge.code2040.org/api/prefix/validate',
+						method: 'POST',
+						dataType: 'json',
+						data: myInfo,
+						contentType:'application/json; charset=utf-8',
+						complete: function(res){
+							document.getElementById("5").innerHTML=( "Response :" + eval(res).responseText);
+
+						}
+					});
+					
+				}
+				else
+				{
+					alert("Please go in order!");
+				}
+			}
+			
+			function fixList(array, prefix)
+			{
+				for(i = 0; i< array.length; i++)
+				{
+					if(array[i].indexOf(prefix) == 0)
+					{
+						array.splice(i,1);
+						i--;
+					}
+					
+					
+				}	
+				return array;
+			}
+	
+		</script>
+		
+	</head>
+	<body>
+		<h1> <i>Scott Paillant's</i> Code 2040 API Challenge </h1>
+		<h2> <span> Prefix List</span> </h2>
+		<h3> Note: You should go in order to receive no errors. </h3>
+	
+		<div id="title"> Other challenges </div> 
+		<div> <a href="Reverse.html"> Reverse String</a> </div>  
+		<div> <a href="NeedleInAHaystack.html"> Needle In A Haystack </a> </div> 
+		<div> <a href="Dating.html"> The Dating game</a> </div> 
+		<p>
+			<div>The objective:  </div>
+			<div>1. Send the information and receive prefix and list.</div>
+			<div>2. After retrieving your token reorder the list to only contain items in the list with the prefix.</div>
+			<div>3. Return the correct list to the api.</div>
+			
+			You can press the buttons below to let the code do all these 3 steps for you!
+		
+		</p>
+		<button onclick="sendScottData();"> 
+			Click on this button to send Scott's data!
+		</button>
+		<br />
+		<br />
+		<div id="1">  
+		</div>
+		<br />
+		<br />
+		<button onclick="getAndFind()"> 
+			Click on this to get the prefix, list and reorder the list with only those with the prefix!
+		</button>
+		<br />
+		<br />
+		<div id="2">
+		</div>
+		
+		<div id="3">
+		</div>
+		<div id="4">
+		</div>
+		<br />
+		<br />
+		<button onclick="send()"> 
+			Click on this to send the corrected list!
+		</button>
+		<br />
+		<br />
+		
+		
+		<div id="5">
+		</div>
+		
+		
+	
+		
+		
+		
+	</body>
+</html>
